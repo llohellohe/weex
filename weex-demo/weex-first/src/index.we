@@ -1,0 +1,93 @@
+<template>
+  <div class="container">
+      <image src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/7d42775b8f0d0c86589082dc9ee179c2.png" class="bannar-image"/>
+      <text class="message" onclick="go('list')">go to list</text>
+      <text class="message" onclick="go('detail')">go to detail</text>
+      <text>{{ind}} --- data</text>
+      <input class="message" v-model="name" placeholder="{{name}}"></input>
+
+      <text>++{{name}}</text>
+
+
+      <weather wd="{{message}}" temperature="789">{{page}}</weather>
+  </div>
+</template>
+
+
+
+<style>
+  .container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .bannar-image{
+    width:200;
+    height:200;
+  }
+  .message{
+    padding-top: 20;
+    padding-bottom: 40;
+    color: #0055dd;
+    font-size: 28; 
+  }
+  .quotes{
+    font-size: 16;
+    color:#666; 
+  }
+</style>
+
+<script>
+
+  require('./include/weather.we');
+
+  const navigator = require('@weex-module/navigator');
+  const storage = require('@weex-module/storage');
+
+  const utils = require('./lib/utils');
+
+
+  storage.setItem('index2',"index-data--",function(e){});
+
+
+
+
+
+  module.exports = {
+    data: {
+      message: 'Welcome to Use Weexpack!!!YANGQI!',
+      quotes: 'A Tool To Build WEEX Faster',
+      ind:'',
+      name:'DEFAULT NAME'
+    },
+
+    methods:{
+      go(page){
+        const url = this.$getConfig().bundleUrl;
+        console.log('go form '+page+' '+url);
+        navigator.push({
+          url: utils.setBundleUrl(url, page+'.js')
+        })
+      }
+    },
+
+    created(){
+      const self = this;
+      storage.getItem('index2',function(res){
+          if (res.result == 'success') {
+          try {
+            let dd=res.data
+
+            console.log("get storage data:"+dd+" name is "+self.name);
+            self.ind=dd;
+            self.name=dd;
+          } catch (e) {
+            console.log('parse error ');  
+          }
+         } 
+          }
+        );
+    }
+  }
+</script>
